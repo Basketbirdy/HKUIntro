@@ -10,11 +10,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] Collider2D coll;
     [SerializeField] Rigidbody2D rb2d;
+    private Collider2D currentCollider;
 
     [Header("Variables")]
     [Header("Movement")]
     [SerializeField] float movementSpeed = 10f;
     [SerializeField] float jumpheight = 10f;
+    [SerializeField] float climbSpeed = 10f;
 
     [Header("Jumping")]
     [SerializeField] float groundCheckOffset = -0.6f;
@@ -25,7 +27,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("States")]
     [SerializeField] bool isGrounded;
     [SerializeField] bool isJumping;
+    [SerializeField] bool isClimbing;
     [SerializeField] bool canMove = true;
+
 
 
     [Header("AbilityStates")]
@@ -36,12 +40,16 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         canJump = true;
+        TriggerMovement(true);
     }
 
     // Update is called once per frame
     void Update()
     {
         if (canMove) MovePlayer();
+
+        if (isClimbing) MoveUp(currentCollider);
+        else if(canMove == false) TriggerMovement(true);
 
         GroundCheck();
 
@@ -86,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump()
     {
-        if (isGrounded && canJump)
+        if (isGrounded && canJump && canMove)
         {
             isJumping = true;
             Vector2 jumpVector = new Vector2(0, jumpheight);
@@ -109,6 +117,36 @@ public class PlayerMovement : MonoBehaviour
     public void TriggerMovement(bool state)
     {
         canMove = state;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        currentCollider = collision;
+
+        if (collision.CompareTag("Climbable"))
+        {
+            isClimbing = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Climbable"))
+        {
+            isClimbing = false;
+            ChangeGravity(normalGravity);
+        }
+    }
+
+    private void MoveUp(Collider2D collider)
+    {
+        ChangeGravity(0);
+        TriggerMovement(false);
+        Vector2 climbVector = new Vector2(0, climbSpeed);
+        //rb2d.AddForce(climbVector);
+        rb2d.velocity = climbVector;
+
+        // y-top - y-player, top distance * force
     }
 }
 
