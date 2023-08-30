@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
             sound.source.loop = sound.loops;
         }
 
-        AudioManager.instance.PlaySound("Game_Spannend_Thema_Bos");
+        AudioManager.instance.PlaySound("BackgroundTheme");
     }
 
     public void Update()
