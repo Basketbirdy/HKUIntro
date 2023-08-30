@@ -108,11 +108,11 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics2D.Linecast(transform.position, groundCheckOffsetVector, groundCheck);
     }
 
-    //private void OnDrawGizmos()
-    //{
-    //    Vector3 debugVector = new Vector3(transform.position.x, transform.position.y + groundCheckOffset, 0);
-    //    Debug.DrawLine(transform.position, debugVector, Color.red, groundCheck);
-    //}
+    private void OnDrawGizmos()
+    {
+        Vector3 debugVector = new Vector3(transform.position.x, transform.position.y + groundCheckOffset, 0);
+        //Debug.DrawLine(transform.position, debugVector, Color.red, groundCheck);
+    }
 
     public void TriggerMovement(bool state)
     {
